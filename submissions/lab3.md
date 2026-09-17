@@ -124,12 +124,13 @@ A forked/malicious PR that can write to the Actions cache could plant tainted mo
 | Optimization | Before (s) | After (s) | Saving |
 |--------------|-----------:|----------:|-------:|
 | 1 — concurrency cancel (stale PR runs) | full re-run wasted | cancelled | minutes on busy PRs (not one-shot wall) |
-| 2 — shallow + `GOFLAGS=-buildvcs=false` | ~44 wall | *(measure after push)* | expect small (~1–3 s) |
+| 2 — shallow + `GOFLAGS=-buildvcs=false` | ~44 wall | **~43** wall | ~1 s (within runner noise) |
 | 3 — skip lint on docs-only | lint ~26 s always | ~few s filter-only | ~20+ s on docs-only PRs |
-| 4 — golangci binary install + cache | cold download each job | warm cache hit | typically several s on lint |
-| **Total wall-clock (Go-changing PR)** | **~44** | **≤90 (measure)** | fill after green Actions run |
+| 4 — golangci binary install + cache | lint job ~26 s | lint job **~17 s** | **~9 s** on lint job |
+| **Total wall-clock (Go-changing PR)** | **~44** | **~43** | **~1 s** (still **≪ 90 s**) |
 
-*After push, paste the new Actions run URL and update the After column with measured wall-clock.*
+After-bonus green run: https://github.com/Telman3000/DevOps-Intro/actions/runs/35248461719  
+(`test (1.23)` 34s, `lint` 17s, `ci-ok` 4s; wall-clock ≈ 43 s)
 
 ### B.4 Bottleneck analysis
 
