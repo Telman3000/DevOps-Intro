@@ -5,7 +5,7 @@ Branch: `feature/lab4`
 Fork: https://github.com/Telman3000/DevOps-Intro
 Environment: WSL2 Ubuntu 24.04 (Windows host)
 
-Course PR: *(paste after opening)*
+Course PR: https://github.com/inno-devops-labs/DevOps-Intro/pull/1581
 
 > **Port note:** In this WSL, `:8080` is occupied by Airflow (gunicorn). QuickNotes was run on **`:18080`** and the TLS front on **`:18443`** so captures hit the real QuickNotes process, not Airflow.
 
