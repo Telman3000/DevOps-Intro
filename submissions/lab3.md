@@ -6,7 +6,7 @@ Fork: https://github.com/Telman3000/DevOps-Intro
 Path: **GitHub Actions** (default — can sign in to github.com)
 
 Fork draft PR (CI gate validation): https://github.com/Telman3000/DevOps-Intro/pull/1  
-Course PR: *(paste after opening `Telman3000:feature/lab3` → `inno-devops-labs/DevOps-Intro:main`)*
+Course PR: https://github.com/inno-devops-labs/DevOps-Intro/pull/1576
 
 ---
 
