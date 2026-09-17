@@ -1,0 +1,101 @@
+# Lab 3 submission
+
+Author: Telman Nuruzov (`Telman3000`)
+Branch: `feature/lab3`
+Fork: https://github.com/Telman3000/DevOps-Intro
+Path: **GitHub Actions** (default — can sign in to github.com)
+
+Fork draft PR (CI gate validation): https://github.com/Telman3000/DevOps-Intro/pull/1  
+Course PR: *(paste after opening `Telman3000:feature/lab3` → `inno-devops-labs/DevOps-Intro:main`)*
+
+---
+
+## Task 1 — PR gate (vet + test + lint)
+
+### Evidence
+
+- Workflow: `.github/workflows/ci.yml`
+- Runner: `ubuntu-24.04` (pinned, not `ubuntu-latest`)
+- Jobs: `vet`, `test` (`go test -race -count=1`), `lint` (golangci-lint **v2.5.0**)
+- Actions pinned by full commit SHA; `permissions: contents: read`
+- Working directory: `app/`
+
+**Green CI run (Task 1 baseline, before matrix):**  
+https://github.com/Telman3000/DevOps-Intro/actions/runs/35244829365
+
+**Deliberate fail (Task 1.5)** — broke expected note ID in `app/store_test.go`, commit `9a77506`:  
+https://github.com/Telman3000/DevOps-Intro/actions/runs/35245139268  
+(`test` red; PR blocked by required checks)
+
+**Fix** — restore test, commit `63e12f7`:  
+https://github.com/Telman3000/DevOps-Intro/actions/runs/35245433254
+
+**Branch protection (after Task 2):** ruleset on fork `main` requires status check **`ci-ok`** only, plus require branches up to date / block force pushes.
+
+![Ruleset requires ci-ok](screenshots/lab3-ruleset-ci-ok-only.png)
+
+![PR all checks green, ci-ok Required](screenshots/lab3-pr-all-checks-green.png)
+
+### Design questions (1.2)
+
+**a) Why pin `ubuntu-24.04` instead of `ubuntu-latest`?**  
+`ubuntu-latest` is a moving alias. When GitHub retargets it to a new LTS, packages, kernel, and tool defaults can change overnight and break a previously green pipeline with no commit of yours. A fixed label keeps the runner environment reproducible until you intentionally upgrade.
+
+**b) Why split vet / test / lint?**  
+Separate jobs run in parallel (faster wall-clock) and fail independently — you see *which* gate broke. One mega-job would serialize everything, hide the failing stage behind a single red X, and waste time re-running unrelated steps on every retry.
+
+**c) What attack does SHA pinning prevent?**  
+Tag-moving / compromised-action supply-chain attacks. In **March 2025**, **`tj-actions/changed-files`** was compromised: mutable tags were rewritten to malicious commits that exfiltrated CI secrets from thousands of public workflows (Lecture 3). Pinning the immutable 40-char commit SHA means a moved tag cannot silently change what you run.
+
+**d) What is `permissions:`?**  
+Workflow/job token scopes for `GITHUB_TOKEN`. Principle of least privilege: start with `contents: read` so a compromised step cannot push code, create releases, or mutate the repo unless you explicitly grant more.
+
+**e) GitLab path (N/A)** — chose GitHub Actions.
+
+---
+
+## Task 2 — Cache + matrix + path filter
+
+### Optimizations applied (description, not YAML)
+
+1. **Cache** — `actions/setup-go` with `cache: true` (module + build cache keyed via `cache-dependency-path: app/go.mod`).
+2. **Matrix** — `vet` and `test` run on Go **1.23** and **1.24** in parallel with `fail-fast: false`. Aggregation job **`ci-ok`** (`if: always()`, `needs: [vet, test, lint]`) is the single required check so matrix renames do not break branch protection.
+3. **Path filter** — `on.push` / `on.pull_request` limited to `app/**` and `.github/workflows/**`, so docs-only changes do not burn CI minutes.
+
+**Green run with cache + matrix + `ci-ok`:**  
+https://github.com/Telman3000/DevOps-Intro/actions/runs/35246425757
+
+After matrix, old required names `vet`/`test` sat at *Expected — Waiting…* until the ruleset was switched to **`ci-ok` only** (lab pitfall §2.2):
+
+![Old vet/test waiting after matrix](screenshots/lab3-matrix-old-checks-waiting.png)
+
+### Timing table (wall-clock of the workflow run)
+
+| Scenario | Wall-clock | Evidence |
+|----------|------------|----------|
+| Baseline (no cache, single Go, no path filter) | **~29 s** | [run 35244829365](https://github.com/Telman3000/DevOps-Intro/actions/runs/35244829365) — jobs `vet` 17s / `test` 27s / `lint` 29s (parallel) |
+| With cache | **~29 s** (same order as baseline) | Cache landed in the same commit as matrix; QuickNotes has **zero** third-party modules (`app/go.mod` has no `require`, no `go.sum`), so `setup-go` cache has almost nothing to restore. Wall-clock stays dominated by runner start + toolchain install — expected per lab §2.4. |
+| With cache + matrix | **~44 s** | [run 35246425757](https://github.com/Telman3000/DevOps-Intro/actions/runs/35246425757) — slowest cell `test (1.23)` ~38s; `ci-ok` +2s after needs |
+
+Per-step insight: total job time barely moves with cache on this repo; a dependency-heavy project would save on module download / build-cache restore inside `setup-go` and `go test`, not on runner provisioning.
+
+### Path filter note
+
+Configured on both `push` and `pull_request`. A PR that only touches `README.md` / `labs/**` / `submissions/**` (outside the path globs) should show **no** `ci` workflow run. *(Demo: open a tiny docs-only PR on the fork if graders want a live skip.)*
+
+### Design questions (2.5)
+
+**f) Why cache `go.sum`-keyed inputs, not build outputs?**  
+Module contents are content-addressed and pinned by the lockfile — a hit means bit-identical deps. Build outputs can depend on toolchain flags, OS packages, and non-hermetic environment details; caching “whatever we produced last time” risks subtle skew. Keying on inputs keeps the cache a safe accelerator, not a source of unreproducible binaries.
+
+**g) What does `fail-fast: false` change?**  
+Default `fail-fast: true` cancels remaining matrix cells when one fails — you may never learn that *both* 1.23 and 1.24 broke. `false` lets every cell finish so you see the full failure surface. Use `true` when CI minutes are scarce and one failure is enough to reject the PR immediately (e.g. huge expensive matrices).
+
+**h) Cache poisoning risk from a malicious PR?**  
+A forked/malicious PR that can write to the Actions cache could plant tainted modules/artifacts that a later trusted workflow on `main` restores and executes/trusts. GitHub mitigates this by **scoping cache writes**: caches created from pull requests from forks (and related restrictions) are not freely readable by workflows on the default branch the way same-ref caches are — see GitHub’s docs on [Caching dependencies to speed up workflows](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows) / security hardening for Actions (cache isolation for PRs from forks). Still treat cache as an optimization layer, not a trust boundary.
+
+---
+
+## Bonus
+
+Not attempted in this submission.
