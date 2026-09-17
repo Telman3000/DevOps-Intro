@@ -1,0 +1,8 @@
+
+Name        Type TTL Section IPAddress     
+----        ---- --- ------- ---------     
+example.com A    209 Answer  104.20.23.154 
+example.com A    209 Answer  172.66.147.243
+
+
+

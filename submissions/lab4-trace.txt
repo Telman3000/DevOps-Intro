@@ -1,0 +1,44 @@
+reading from file /mnt/c/Users/Asus/Desktop/DevOps-Intro/submissions/lab4-artifacts/lab4-trace.pcap, link-type EN10MB (Ethernet), snapshot length 262144
+20:55:22.797094 IP 127.0.0.1.47586 > 127.0.0.1.18080: Flags [S], seq 1550310315, win 65495, options [mss 65495,sackOK,TS val 2744393259 ecr 0,nop,wscale 7], length 0
+E..<..@.@.."..........F.\g...........0.........
+...+........
+20:55:22.797104 IP 127.0.0.1.18080 > 127.0.0.1.47586: Flags [S.], seq 3054691307, ack 1550310316, win 65483, options [mss 65495,sackOK,TS val 2744393259 ecr 2744393259,nop,wscale 7], length 0
+E..<..@.@.<.........F.......\g.......0.........
+...+...+....
+20:55:22.797110 IP 127.0.0.1.47586 > 127.0.0.1.18080: Flags [.], ack 1, win 512, options [nop,nop,TS val 2744393259 ecr 2744393259], length 0
+E..4..@.@..)..........F.\g...........(.....
+...+...+
+20:55:22.797512 IP 127.0.0.1.47586 > 127.0.0.1.18080: Flags [P.], seq 1:176, ack 1, win 512, options [nop,nop,TS val 2744393259 ecr 2744393259], length 175
+E.....@.@..y..........F.\g.................
+...+...+POST /notes HTTP/1.1
+Host: 127.0.0.1:18080
+User-Agent: curl/8.5.0
+Accept: */*
+Content-Type: application/json
+Content-Length: 39
+
+{"title":"trace me","body":"in flight"}
+20:55:22.797526 IP 127.0.0.1.18080 > 127.0.0.1.47586: Flags [.], ack 176, win 511, options [nop,nop,TS val 2744393259 ecr 2744393259], length 0
+E..4(a@.@..a........F.......\g.[.....(.....
+...+...+
+20:55:22.809553 IP 127.0.0.1.18080 > 127.0.0.1.47586: Flags [P.], seq 1:206, ack 176, win 512, options [nop,nop,TS val 2744393271 ecr 2744393259], length 205
+E...(b@.@...........F.......\g.[...........
+...7...+HTTP/1.1 201 Created
+Content-Type: application/json
+Date: Thu, 17 Sep 2026 17:55:22 GMT
+Content-Length: 92
+
+{"id":5,"title":"trace me","body":"in flight","created_at":"2026-09-17T17:55:22.79773473Z"}
+
+20:55:22.809575 IP 127.0.0.1.47586 > 127.0.0.1.18080: Flags [.], ack 206, win 511, options [nop,nop,TS val 2744393271 ecr 2744393271], length 0
+E..4..@.@..'..........F.\g.[.........(.....
+...7...7
+20:55:22.831782 IP 127.0.0.1.47586 > 127.0.0.1.18080: Flags [F.], seq 176, ack 206, win 512, options [nop,nop,TS val 2744393294 ecr 2744393271], length 0
+E..4..@.@..&..........F.\g.[.........(.....
+...N...7
+20:55:22.831868 IP 127.0.0.1.18080 > 127.0.0.1.47586: Flags [F.], seq 206, ack 177, win 512, options [nop,nop,TS val 2744393294 ecr 2744393294], length 0
+E..4(c@.@.._........F.......\g.\.....(.....
+...N...N
+20:55:22.831882 IP 127.0.0.1.47586 > 127.0.0.1.18080: Flags [.], ack 207, win 512, options [nop,nop,TS val 2744393294 ecr 2744393294], length 0
+E..4..@.@..%..........F.\g.\.........(.....
+...N...N

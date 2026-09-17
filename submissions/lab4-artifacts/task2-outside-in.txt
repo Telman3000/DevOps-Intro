@@ -1,0 +1,23 @@
+### ps after double bind
+root        7586    7386  0 20:55 pts/6    00:00:00 ./quicknotes
+
+### broken instance log
+2026/09/17 20:55:36 quicknotes listening on :18080 (notes loaded: 5)
+2026/09/17 20:55:36 listen: listen tcp :18080: bind: address already in use
+
+### Outside-in chain
+# 1) is it running?
+root        7586    7386  0 20:55 pts/6    00:00:00 ./quicknotes
+
+# 2) is it listening?
+LISTEN 0      4096                *:18080            *:*    users:(("quicknotes",pid=7586,fd=3))     
+
+# 3) reachable? (expect 200 from first instance)
+200
+{"notes":5,"status":"ok"}
+
+# 4) firewall?
+(no iptables/nft output)
+
+# 5) DNS?
+127.0.0.1

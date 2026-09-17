@@ -1,0 +1,4 @@
+### after repair
+{"notes":5,"status":"ok"}
+
+LISTEN 0      4096                *:18080            *:*    users:(("quicknotes",pid=7644,fd=3))     

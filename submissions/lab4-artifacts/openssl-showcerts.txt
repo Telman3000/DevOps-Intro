@@ -1,0 +1,73 @@
+depth=0 CN = localhost
+verify error:num=18:self-signed certificate
+verify return:1
+depth=0 CN = localhost
+verify return:1
+CONNECTED(00000003)
+---
+Certificate chain
+ 0 s:CN = localhost
+   i:CN = localhost
+   a:PKEY: id-ecPublicKey, 256 (bit); sigalg: ecdsa-with-SHA256
+   v:NotBefore: Sep 17 17:03:19 2026 GMT; NotAfter: Sep 18 18:03:19 2026 GMT
+-----BEGIN CERTIFICATE-----
+MIIBczCCARmgAwIBAgIIAol5sbNPgJ4wCgYIKoZIzj0EAwIwFDESMBAGA1UEAxMJ
+bG9jYWxob3N0MB4XDTI2MDkxNzE3MDMxOVoXDTI2MDkxODE4MDMxOVowFDESMBAG
+A1UEAxMJbG9jYWxob3N0MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEpQrcDiL6
+o1xdTbKMMvv9ekpqtPEA1WGbwzGxdQTG22usD/ad7VR9SCBZlUGQoP+YRpluQL0M
+EVT3/Jz871SybqNVMFMwDgYDVR0PAQH/BAQDAgWgMBMGA1UdJQQMMAoGCCsGAQUF
+BwMBMCwGA1UdEQQlMCOCCWxvY2FsaG9zdIcEfwAAAYcQAAAAAAAAAAAAAAAAAAAA
+ATAKBggqhkjOPQQDAgNIADBFAiBh3yiY4vtRXydG9pSF5wH9mTIObbV0gbFyQRPe
+J+rRswIhANOE+lPu1VnhirR2w9fHHW/TWN1QAQXUuuiPmGDKbDND
+-----END CERTIFICATE-----
+---
+Server certificate
+subject=CN = localhost
+issuer=CN = localhost
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: ECDSA
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 734 bytes and written 375 bytes
+Verification error: self-signed certificate
+---
+New, TLSv1.3, Cipher is TLS_AES_128_GCM_SHA256
+Server public key is 256 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 18 (self-signed certificate)
+---
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_128_GCM_SHA256
+    Session-ID: C25319B473F4F553DB8DC5AA1538D21ACB62AE61852402777244A3A4BD21738A
+    Session-ID-ctx: 
+    Resumption PSK: A83C57D297AEB97339A9EDA03CA6F848C13AD5AC67B4EDAAF5D066F687E3C288
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 604800 (seconds)
+    TLS session ticket:
+    0000 - 82 05 9f ed 4a cd 67 3a-01 4b 7b 00 62 a8 3a 1c   ....J.g:.K{.b.:.
+    0010 - 42 7c 1c 49 9c 40 23 18-6c 0e bf 59 b3 0a 2f 34   B|.I.@#.l..Y../4
+    0020 - 29 47 fd 02 94 47 9b f8-17 ac ab 6b a5 76 7f aa   )G...G.....k.v..
+    0030 - 67 38 a0 2f 97 29 e1 18-ea fe 5a 0b 8e 4a ba 97   g8./.)....Z..J..
+    0040 - 77 84 65 74 71 c3 26 fd-ea e0 52 67 ed 2b 1b 78   w.etq.&...Rg.+.x
+    0050 - 7b 10 16 b3 5f 35 a0 ab-e7 60 0f 7a f7 8e a2 3f   {..._5...`.z...?
+    0060 - ae 2a f4 44 ee 3e 93 3b-ef                        .*.D.>.;.
+
+    Start Time: 17896DONE
+68204
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self-signed certificate)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK

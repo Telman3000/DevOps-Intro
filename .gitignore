@@ -61,3 +61,19 @@ Thumbs.db
 #   *.sbom.cdx.json, zap-*.html/json, trivy-*.txt   (Lab 9 scan evidence)
 #   flake.nix, flake.lock      (Lab 11)
 #   wasm/main.go, spin.toml, go.sum   (Lab 12)
+
+# Lab 4 local build artifacts
+app/quicknotes-linux
+submissions/lab4-artifacts/quicknotes
+# Lab 4 — keep evidence text/pcaps; ignore heavy/local binaries & runtime data
+submissions/lab4-artifacts/bin/
+submissions/lab4-artifacts/data/
+submissions/lab4-artifacts/caddy/
+submissions/lab4-artifacts/*.pem
+submissions/lab4-artifacts/quicknotes
+submissions/lab4-artifacts/qn-*.log
+submissions/lab4-artifacts/caddy.log
+submissions/lab4-artifacts/tlsproxy.log
+submissions/lab4-artifacts/tlsproxy-smoke.log
+submissions/lab4-artifacts/seed.json
+scripts/tlsproxy

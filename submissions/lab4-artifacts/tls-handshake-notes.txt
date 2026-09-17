@@ -1,0 +1,32 @@
+### From curl -vk (handshake lines)
+* Connected to 127.0.0.1 (127.0.0.1) port 18443
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_128_GCM_SHA256 / X25519 / id-ecPublicKey
+*  subject: CN=localhost
+*  issuer: CN=localhost
+*  SSL certificate verify result: self-signed certificate (18), continuing anyway.
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+
+### tcpdump summary
+21:03:22.970021 IP 127.0.0.1.49228 > 127.0.0.1.18443: Flags [S], seq 291464584, win 65495, options [mss 65495,sackOK,TS val 2744873459 ecr 0,nop,wscale 7], length 0
+21:03:22.970031 IP 127.0.0.1.18443 > 127.0.0.1.49228: Flags [S.], seq 3013049733, ack 291464585, win 65483, options [mss 65495,sackOK,TS val 2744873459 ecr 2744873459,nop,wscale 7], length 0
+21:03:22.970059 IP 127.0.0.1.49228 > 127.0.0.1.18443: Flags [.], ack 1, win 512, options [nop,nop,TS val 2744873459 ecr 2744873459], length 0
+21:03:22.980424 IP 127.0.0.1.49228 > 127.0.0.1.18443: Flags [P.], seq 1:518, ack 1, win 512, options [nop,nop,TS val 2744873469 ecr 2744873459], length 517
+21:03:22.980443 IP 127.0.0.1.18443 > 127.0.0.1.49228: Flags [.], ack 518, win 508, options [nop,nop,TS val 2744873469 ecr 2744873469], length 0
+21:03:22.982725 IP 127.0.0.1.18443 > 127.0.0.1.49228: Flags [P.], seq 1:889, ack 518, win 512, options [nop,nop,TS val 2744873472 ecr 2744873469], length 888
+21:03:22.982742 IP 127.0.0.1.49228 > 127.0.0.1.18443: Flags [.], ack 889, win 506, options [nop,nop,TS val 2744873472 ecr 2744873472], length 0
+21:03:23.004488 IP 127.0.0.1.49228 > 127.0.0.1.18443: Flags [P.], seq 518:582, ack 889, win 506, options [nop,nop,TS val 2744873493 ecr 2744873472], length 64
+21:03:23.013804 IP 127.0.0.1.49228 > 127.0.0.1.18443: Flags [P.], seq 582:688, ack 889, win 506, options [nop,nop,TS val 2744873503 ecr 2744873472], length 106
+21:03:23.013852 IP 127.0.0.1.18443 > 127.0.0.1.49228: Flags [.], ack 688, win 512, options [nop,nop,TS val 2744873503 ecr 2744873493], length 0
+21:03:23.018834 IP 127.0.0.1.18443 > 127.0.0.1.49228: Flags [P.], seq 889:1045, ack 688, win 512, options [nop,nop,TS val 2744873508 ecr 2744873493], length 156
+21:03:23.053765 IP 127.0.0.1.49228 > 127.0.0.1.18443: Flags [P.], seq 688:712, ack 1045, win 508, options [nop,nop,TS val 2744873543 ecr 2744873508], length 24
+21:03:23.053840 IP 127.0.0.1.49228 > 127.0.0.1.18443: Flags [F.], seq 712, ack 1045, win 508, options [nop,nop,TS val 2744873543 ecr 2744873508], length 0
+21:03:23.053931 IP 127.0.0.1.18443 > 127.0.0.1.49228: Flags [P.], seq 1045:1069, ack 713, win 512, options [nop,nop,TS val 2744873543 ecr 2744873543], length 24
+21:03:23.053946 IP 127.0.0.1.49228 > 127.0.0.1.18443: Flags [R], seq 291465297, win 0, length 0
