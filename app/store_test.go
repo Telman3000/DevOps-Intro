@@ -21,8 +21,8 @@ func TestStore_CreateAndGet(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Create: %v", err)
 	}
-	if n.ID != 1 {
-		t.Fatalf("expected ID=1, got %d", n.ID)
+	if n.ID != 999 { // deliberate Lab 3 CI fail
+		t.Fatalf("expected ID=999, got %d", n.ID)
 	}
 	got, err := s.Get(n.ID)
 	if err != nil {
