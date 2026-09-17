@@ -96,6 +96,41 @@ A forked/malicious PR that can write to the Actions cache could plant tainted mo
 
 ---
 
-## Bonus
+## Bonus — Pipeline performance
 
-Not attempted in this submission.
+**Target:** ≤ 90 s wall-clock. Task 2 matrix run was already **~44 s** ([run 35246425757](https://github.com/Telman3000/DevOps-Intro/actions/runs/35246425757)); bonus keeps that headroom and cuts avoidable work.
+
+### B.1 Profile (Task 2 matrix run, before bonus)
+
+| Phase | Approx. | Notes |
+|-------|--------:|-------|
+| Runner start / queue | ~3–5 s | Included in job start → first step |
+| Dependency setup (`setup-go`, module/build cache) | ~10–15 s/job | Dominant *setup* cost; module cache nearly empty (no third-party deps) |
+| Actual work | vet ~1–3 s; `go test -race` ~5–10 s; golangci ~5–10 s | Race build dominates real CPU work |
+| Cleanup / artifacts | ~0 s | No artifact uploads |
+| **Wall-clock (parallel jobs)** | **~44 s** | Bound by slowest cell: `test (1.23)` ~38 s + `ci-ok` ~2 s |
+
+### B.2 Extra optimizations (≥ 3 beyond Task 2)
+
+1. **`concurrency` + `cancel-in-progress`** — new pushes on the same PR cancel the previous run so minutes aren't spent on superseded SHAs.
+2. **Shallow checkout (`fetch-depth: 1`) + `GOFLAGS=-buildvcs=false`** — less git data; skip VCS stamping that fails or wastes time on shallow clones.
+3. **Skip golangci on docs-only `app/` changes** — `dorny/paths-filter` (SHA-pinned); if no `*.go` / lint config / `go.mod` / workflow change, lint job exits after a cheap filter step.
+4. **golangci `install-mode: binary` + action cache** — avoid `go install` of the linter every run; reuse the action's binary cache.
+
+(Lint already runs in parallel with vet/test from Task 2 — kept.)
+
+### B.3 Before / after
+
+| Optimization | Before (s) | After (s) | Saving |
+|--------------|-----------:|----------:|-------:|
+| 1 — concurrency cancel (stale PR runs) | full re-run wasted | cancelled | minutes on busy PRs (not one-shot wall) |
+| 2 — shallow + `GOFLAGS=-buildvcs=false` | ~44 wall | *(measure after push)* | expect small (~1–3 s) |
+| 3 — skip lint on docs-only | lint ~26 s always | ~few s filter-only | ~20+ s on docs-only PRs |
+| 4 — golangci binary install + cache | cold download each job | warm cache hit | typically several s on lint |
+| **Total wall-clock (Go-changing PR)** | **~44** | **≤90 (measure)** | fill after green Actions run |
+
+*After push, paste the new Actions run URL and update the After column with measured wall-clock.*
+
+### B.4 Bottleneck analysis
+
+The remaining wall-clock is dominated by **GitHub-hosted runner bring-up + `actions/setup-go` toolchain install**, not by QuickNotes' tiny test suite — `go test -race` itself is only a few seconds once the toolchain is warm. Making the *code* shorter would barely move CI: you'd need fewer matrix cells, dropping `-race` on one version, or a pre-baked image/self-hosted runner with Go already installed. I'd stop optimizing around **~60–90 s** for this repo: below that, variance in queue/start time exceeds any local tweak, and further cuts trade safety (race, dual Go versions, lint) for noise. We already sit under the **90 s** bonus target with Task 2 alone; bonus work mainly protects minutes on docs-only and superseded pushes.
