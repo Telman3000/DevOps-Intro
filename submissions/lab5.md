@@ -5,7 +5,7 @@ Branch: `feature/lab5`
 Fork: https://github.com/Telman3000/DevOps-Intro
 Host: Windows 10 + VirtualBox **7.2.18** + Vagrant **2.4.9**
 
-Course PR: *(paste after opening)*
+Course PR: https://github.com/inno-devops-labs/DevOps-Intro/pull/1622
 
 ---
 
