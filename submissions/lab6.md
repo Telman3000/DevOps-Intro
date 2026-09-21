@@ -5,7 +5,7 @@ Branch: `feature/lab6`
 Fork: https://github.com/Telman3000/DevOps-Intro
 Host: Windows 10 + Docker Engine **29.4.3** (Compose v2)
 
-Course PR: _(fill after open)_
+Course PR: https://github.com/inno-devops-labs/DevOps-Intro/pull/1623
 
 ---
 
