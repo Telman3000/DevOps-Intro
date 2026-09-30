@@ -1,4 +1,4 @@
-# Lab 6 — QuickNotes Compose (volume + healthcheck + hardening bonus)
+# Lab 6+8 — QuickNotes + Prometheus + Grafana
 services:
   quicknotes:
     build: ./app
@@ -11,7 +11,6 @@ services:
       SEED_PATH: "/seed.json"
     volumes:
       - quicknotes-data:/data
-    # Writable space under read-only rootfs (app mainly writes to /data volume)
     tmpfs:
       - /tmp
     read_only: true
@@ -21,12 +20,43 @@ services:
       - ALL
     restart: unless-stopped
     healthcheck:
-      # Distroless has no shell/wget — use the static /healthcheck binary from the image
       test: ["CMD", "/healthcheck"]
       interval: 5s
       timeout: 2s
       retries: 3
       start_period: 5s
+
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/rules:/etc/prometheus/rules:ro
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+    depends_on:
+      quicknotes:
+        condition: service_healthy
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.6.0
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: lab8admin
+      GF_SECURITY_ADMIN_PASSWORD: lab8-quicknotes-sre
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
 
 volumes:
   quicknotes-data:
