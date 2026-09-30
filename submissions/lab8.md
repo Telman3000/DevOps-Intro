@@ -137,17 +137,48 @@ If pages fire when users were unaffected more than ~**50%** of the time (false-p
 
 ---
 
-## Bonus — Synthetic monitoring
+## Bonus — Synthetic monitoring from the outside
 
-_(Attempted if time/tools allow: ngrok/cloudflared + Checkly 2 regions. Fill table after ≥30 min run.)_
+### Public URL
 
-| | Prometheus (Compose) | Checkly (2 regions) |
+Cloudflare quick tunnel (no account):
+
+```text
+https://turtle-associated-roller-suddenly.trycloudflare.com
+GET /health → {"notes":29,"status":"ok"}
+```
+
+Artifact: `submissions/lab8-artifacts/public-url.txt`, `cloudflared-err.txt`
+
+### External probe (Checkly-equivalent)
+
+Used **check-host.net** multi-node HTTP checks every ~1 minute for **30 rounds (~30 min)** from:
+
+- **Germany** — `de2.node.check-host.net`
+- **Singapore** — `sg1.node.check-host.net`
+
+Success criteria: HTTP **200** and latency **< 2s** (same intent as Checkly alerts).
+
+Optional Checkly-as-code (same URL, `eu-central-1` + `ap-southeast-1`, 1 min): `monitoring/checkly/` — deploy with API key if desired.
+
+### Results (≥30 min window)
+
+| | Prometheus (inside Compose) | check-host.net (DE + SG) |
 |--|---|---|
-| Avg latency p50 | _TBD_ | _TBD_ |
-| Avg latency p95 | _TBD_ | _TBD_ |
-| Errors observed | _TBD_ | _TBD_ |
+| Avg latency p50 | *n/a* (app has no latency histogram; internal traffic proxy `request_rate` ≈ **0.29 req/s**) | **0.34 s** |
+| Avg latency p95 | *n/a* (same) | **1.41 s** |
+| Errors observed | **0%** error ratio (avg/max over window) | **0 / 58** probes failed (0%) |
 
-Checkly catches path/DNS/TLS/edge failures Prometheus inside the Compose network never sees. Prometheus catches in-process error ratios and saturation that external probes may miss if they only hit `/health`.
+Per-region external (p50 / p95):
+
+- DE: **0.31 s / 0.34 s** (29/29 OK)
+- SG: **0.82 s / 1.44 s** (29/29 OK) — higher RTT from Asia, still &lt; 2s
+
+Artifacts: `synthetic-summary.json`, `synthetic-checkhost.jsonl`, `prom-bonus-summary.json`.
+
+### Failure-mode analysis
+
+Checkly/check-host from the public Internet catches failures Prometheus inside the Compose network cannot see: DNS/TLS issues on the tunnel hostname, Cloudflare edge problems, host firewall blocking inbound public paths, or “works on localhost:8080 but not from outside.” Prometheus catches in-cluster symptoms the external probe may miss if it only hits `/health`: rising 4xx/5xx ratios on other routes, saturation (`quicknotes_notes_total`), scrape target `DOWN`, or error storms between minute-spaced probes. Together they cover path-to-user vs path-inside-the-mesh.
 
 ---
 
