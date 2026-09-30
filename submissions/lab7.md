@@ -215,13 +215,17 @@ Thu 2026-09-24 12:40:12 UTC ... ansible-pull.timer  ansible-pull.service
 
 ### Convergence timeline
 
-_(Completed after `feature/lab7` is pushed to the fork — see updated section / artifacts `journal-pull-*.txt`, `converge-timeline.txt`.)_
+| Step | Time (UTC+3 / UTC) | Evidence |
+|------|--------------------|----------|
+| Git push `restart_sec: 3 → 7` | 2026-09-30 **21:26:13 +0300** | commit `84c1d5d` on `feature/lab7` |
+| Timer / manual `systemctl start ansible-pull.service` | **18:26:33 UTC** | journal: Starting ansible-pull.service |
+| Git on VM advanced | **18:27:10 UTC** | `before: 9e0cc50` → `after: 84c1d5d` |
+| Playbook applied | **18:27:10 UTC** | `Render systemd unit` **changed**; handler `restart quicknotes`; PLAY RECAP `failed=0` |
+| State reconciled | after pull | `/etc/systemd/system/quicknotes.service` → **`RestartSec=7`** (was 3) |
 
-Procedure:
-1. Push `feature/lab7` (so HTTPS clone works).
-2. Change `restart_sec` (or `listen_addr`) in `playbook.yaml`, commit + push.
-3. Wait ≤5 min for timer (or `systemctl start ansible-pull.service`).
-4. Confirm unit on VM matches the push.
+Elapsed push → reconciled: **~1 minute** (well under 5 min).
+
+Artifacts: `submissions/lab7-artifacts/journal-pull-converge.txt`, `converge-timeline.txt`.
 
 ### Design questions (B.4)
 

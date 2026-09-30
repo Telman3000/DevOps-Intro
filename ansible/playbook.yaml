@@ -13,7 +13,7 @@
     listen_addr: ":8080"
     data_path: /var/lib/quicknotes/notes.json
     seed_path: /var/lib/quicknotes/seed.json
-    restart_sec: 3
+    restart_sec: 7
     # Bonus — ansible-pull GitOps loop
     ansible_pull_repo_url: "https://github.com/Telman3000/DevOps-Intro.git"
     ansible_pull_branch: "feature/lab7"
