@@ -5,7 +5,7 @@ Branch: `feature/lab8`
 Fork: https://github.com/Telman3000/DevOps-Intro
 Stack: Docker Compose — QuickNotes (`quicknotes:lab6`) + Prometheus `v3.2.1` + Grafana `11.6.0`
 
-Course PR: _(fill after open)_
+Course PR: https://github.com/inno-devops-labs/DevOps-Intro/pull/1689
 
 Grafana login (local only): user `lab8admin` / password `lab8-quicknotes-sre` (not the Grafana defaults).
 
