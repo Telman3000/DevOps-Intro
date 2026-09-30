@@ -5,7 +5,7 @@ Branch: `feature/lab7`
 Fork: https://github.com/Telman3000/DevOps-Intro
 Host: Windows 10 + Vagrant **2.4.9** / VirtualBox + Ansible control node **inside** the Lab 5 VM (`ansible [core 2.16.3]` / package 9.2 — host Windows Store Python cannot run Ansible; inventory from `vagrant ssh-config` is also provided for Linux/WSL control nodes)
 
-Course PR: _(fill after open)_
+Course PR: https://github.com/inno-devops-labs/DevOps-Intro/pull/1686
 
 ---
 
