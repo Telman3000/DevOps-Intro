@@ -50,9 +50,9 @@ git push origin v0.1.0
 | Item | Value |
 |------|--------|
 | Registry URL | `ghcr.io/telman3000/devops-intro/quicknotes:v0.1.0` |
-| Package visibility | Public (flip once in GH Packages UI after first push) |
-| Actions run URL | _(paste)_ |
-| Clean pull | `docker rmi …; docker pull ghcr.io/telman3000/devops-intro/quicknotes:v0.1.0` → _(paste output)_ |
+| Package visibility | **Public** |
+| Actions run URL | green `release` / `build-and-push` (~51s) |
+| Clean pull | OK — `Downloaded newer image … Digest: sha256:8399292f90bd5166c643ec577e2154dc5e52cd442c23f6c88ebacf2cf0b5037c` |
 
 ### Design questions (a–c)
 
@@ -84,17 +84,20 @@ Docs: [`cloud/devcontainer.md`](../cloud/devcontainer.md), checked-in [`.devcont
    (or `gh codespace ports visibility 8080:public -c <name>`)
 5. Public URL form: `https://<codespace-name>-8080.app.github.dev`
 
-### Public URL + health (fill after codespace is up)
+### Public URL + health
 
 ```text
-URL: https://____________________-8080.app.github.dev
+URL: https://fluffy-garbanzo-7g66w6xx7rqhqwr-8080.app.github.dev
+Codespace: fluffy-garbanzo
+Port 8080 visibility: Public
+Image: ghcr.io/telman3000/devops-intro/quicknotes:v0.1.0 (healthy)
 
-$ curl -v https://…-8080.app.github.dev/health
-_(paste)_
-
-$ gh codespace ports -c <name>
-_(paste — must show 8080 public)_
+$ curl -sS https://fluffy-garbanzo-7g66w6xx7rqhqwr-8080.app.github.dev/health
+{"notes":4,"status":"ok"}
+HTTP=200
 ```
+
+Also `GET /notes` returns seed notes JSON (public, no GitHub login required from this machine).
 
 ### “Scale-to-zero” for Codespaces (manual stop/start)
 
@@ -106,14 +109,14 @@ A stopped codespace does **not** wake on HTTP — that is the line vs Render. Me
 
 | Metric | Value |
 |--------|------:|
-| Warm p50 (5 GET /health) | _s_ |
-| Stop→curl (stopped) #1 | _(status / body)_ |
-| Start→`/health` 200 #1 | _s_ |
-| Stop→curl #2 / Start #2 | _ / _s_ |
-| Stop→curl #3 / Start #3 | _ / _s_ |
-| Note after stop/start | _(gone / still there)_ |
+| Warm p50 (5 GET /health) | **0.367 s** (samples: 0.371, 0.369, 0.367, 0.286, 0.297) |
+| Stop→curl #1 | **HTTP=502** (~0.62–0.67 s) — does not wake |
+| Start→`/health` 200 #1 | Codespace Active, then `docker run` + Port **Public** again; first public `200` in **~0.93 s** once container up (earlier probes were **302** while Private / empty DinD) |
+| Note after stop/start #1 | **GONE** — only 4 seed notes; `lab10-persist` absent (DinD container + `/data` recreated) |
+| Stop→curl #2 / Start #2 | Stop→**HTTP=404** (~0.80 s); after Start+docker+Public → **HTTP=200** (~0.71 s) |
+| Stop→curl #3 / Start #3 | Same pattern (stop does not wake); after Start+docker+Public → **HTTP=200** (~0.85 s) |
 
-**Expected note result:** usually **still there** if the codespace disk is preserved across stop/start (unlike Render Free ephemeral FS). Record what you actually see.
+**Expected note result:** with Docker-in-Docker the QuickNotes container (and its `/data`) is **recreated** after stop/start → the POSTed note is **gone** (only seed remains). That differs from a plain codespace file on the workspace disk, and matches the “ephemeral app state” lesson (similar outcome to Render Free FS, different mechanism).
 
 ### Design questions (d–f) — Option B answers
 
@@ -121,7 +124,7 @@ A stopped codespace does **not** wake on HTTP — that is the line vs Render. Me
 
 **e)** GitHub’s terms treat Codespaces as development VMs, not production hosts (no SLA, quota, not meant for public traffic). To call QuickNotes “production” you’d need durable hosting, monitoring/alerts, backups, auth, a stable URL, and a real deploy pipeline — not a personal codespace.
 
-**f)** On Codespaces the note typically **survives stop/start** (persistent workspace disk). On Render Free it **vanishes** (ephemeral filesystem after spin-down). Different storage model → different answer for step 5.
+**f)** On this setup the note **vanished** after stop/start because DinD drops the container and its writable layer/`/data`. Workspace files on the codespace disk would survive; the *app* data did not. Render Free also loses notes (ephemeral service FS) — same user-visible outcome, different reason.
 
 ---
 
@@ -152,9 +155,9 @@ tunnel warm n=50 p50=0.476s p95=0.516s min=0.436 max=0.608
 
 | Metric | Codespace (Option B) | Cloudflare Tunnel (local-via-edge) |
 |--------|---------------------:|-----------------------------------:|
-| Warm p50 | _(after codespace)_ | **0.476 s** |
-| Warm p95 | _(after codespace)_ | **0.516 s** |
-| Cold start | stop→start (manual, 3×) | N/A (continuously local) |
+| Warm p50 | **0.367 s** | **0.476 s** |
+| Warm p95 | ~0.37 s (n=5) | **0.516 s** |
+| Cold start | 3× stop→404/502 (no wake); start+docker+Public → first `200` ~0.7–0.9 s once ready | N/A (continuously local) |
 | Public URL stability | stable while codespace exists | ephemeral on restart |
 | Cost | free (quota) | free |
 
