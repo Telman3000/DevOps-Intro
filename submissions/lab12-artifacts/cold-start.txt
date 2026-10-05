@@ -1,0 +1,11 @@
+spin_cold_ms=221.6 173.3 193.5 196.1 160.5
+spin_cold_p50_ms=193.5
+docker_cold_ms=456.1 371.4 380.4 385.9 375.0
+docker_cold_p50_ms=380.4
+wasm_bytes=4824779
+docker_image_bytes_inspect=5615886
+docker_images_display=22.6MB
+warm_spin_p50_ms=44.0
+warm_spin_p95_ms=114.1
+warm_docker_p50_ms=43.1
+warm_docker_p95_ms=96.1

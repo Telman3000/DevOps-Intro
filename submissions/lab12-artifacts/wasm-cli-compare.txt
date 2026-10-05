@@ -1,0 +1,4 @@
+spin_main_wasm_bytes=4824779
+cli_main_wasm_bytes=195211
+wasmtime_cold_ms=39,1 35,4 37,1 36,4 34,1
+wasmtime_cold_p50=36.4

@@ -1,0 +1,24 @@
+#:schema https://schemas.spinframework.dev/spin/manifest-v2/latest.json
+
+spin_manifest_version = 2
+
+[application]
+name = "moscow-time"
+version = "0.1.0"
+authors = ["Telman Nuruzov <telmannuruzov364@gmail.com>"]
+description = "Lab 12 — Moscow time JSON endpoint (Spin WASM)"
+
+[[trigger.http]]
+route = "/time"
+component = "moscow-time"
+
+[component.moscow-time]
+source = "main.wasm"
+allowed_outbound_hosts = []
+[component.moscow-time.build]
+# Spin 4 http-go scaffold uses componentize-go (not TinyGo wasip1).
+# On Linux/macOS the scaffold default `go tool componentize-go build` also works.
+# Windows notes (see submissions/lab12.md): install the .zip release binary,
+# and pass patched WASI Go via --go if stock Go lacks wasi-on-idle.
+command = "componentize-go build"
+watch = ["**/*.go", "go.mod"]

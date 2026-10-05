@@ -1,0 +1,2 @@
+Building component moscow-time with `componentize-go build --go ?`
+main.wasm size: 4824779 bytes (4.6 MB)

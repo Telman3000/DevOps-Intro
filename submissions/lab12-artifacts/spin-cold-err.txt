@@ -1,0 +1,1 @@
+Logging component stdio to ".spin\logs\"
