@@ -158,8 +158,8 @@ _(fill after first CI runs on `feature/lab11`)_
 
 | Run | URL |
 |-----|-----|
-| Green (match) | _(Actions → nix-repro)_ |
-| Red (`break_repro`) | _(workflow_dispatch)_ |
+| Green (match) | https://github.com/Telman3000/DevOps-Intro/actions/runs/37294579076 |
+| Red (`feature/lab11-break`) | https://github.com/Telman3000/DevOps-Intro/actions/runs/37295319676 |
 
 ### Design questions (h–j)
 
