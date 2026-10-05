@@ -4,7 +4,7 @@ Author: Telman Nuruzov (`Telman3000`)
 Branch: `feature/lab11`
 Fork: https://github.com/Telman3000/DevOps-Intro
 
-Course PR: _(fill after open)_
+Course PR: https://github.com/inno-devops-labs/DevOps-Intro/pull/1729
 
 ---
 
