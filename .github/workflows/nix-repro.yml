@@ -1,0 +1,76 @@
+# Lab 11 bonus — two independent nix builds must produce identical digests
+name: nix-repro
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      break_repro:
+        description: "Deliberately diverge job A (red demo)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  repro-a:
+    runs-on: ubuntu-24.04
+    outputs:
+      digest: ${{ steps.hash.outputs.digest }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: DeterminateSystems/nix-installer-action@e50d5f73bfe71c2dd0aa4218de8f4afa59f8f81d # v16
+      - name: Deliberately break reproducibility (red demo only)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.break_repro }}
+        run: |
+          # Simulate a timestamp leak / divergent SOURCE_DATE_EPOCH effect by
+          # changing the fixed `created` field only in this job's workspace.
+          sed -i 's/1970-01-01T00:00:01Z/2099-01-01T00:00:00Z/' flake.nix
+          echo "Patched created= timestamp for divergence demo"
+      - name: nix build .#docker
+        run: nix build .#docker --print-build-logs
+      - name: Digest
+        id: hash
+        run: |
+          DIGEST=$(sha256sum "$(readlink -f result)" | awk '{print $1}')
+          echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
+          echo "repro-a digest=${DIGEST}"
+
+  repro-b:
+    runs-on: ubuntu-24.04
+    outputs:
+      digest: ${{ steps.hash.outputs.digest }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: DeterminateSystems/nix-installer-action@e50d5f73bfe71c2dd0aa4218de8f4afa59f8f81d # v16
+      - name: nix build .#docker
+        run: nix build .#docker --print-build-logs
+      - name: Digest
+        id: hash
+        run: |
+          DIGEST=$(sha256sum "$(readlink -f result)" | awk '{print $1}')
+          echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
+          echo "repro-b digest=${DIGEST}"
+
+  compare:
+    needs: [repro-a, repro-b]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Assert identical digests
+        env:
+          A: ${{ needs.repro-a.outputs.digest }}
+          B: ${{ needs.repro-b.outputs.digest }}
+        run: |
+          echo "repro-a=${A}"
+          echo "repro-b=${B}"
+          if [ -z "${A}" ] || [ -z "${B}" ]; then
+            echo "missing digest output(s)"
+            exit 1
+          fi
+          if [ "${A}" != "${B}" ]; then
+            echo "DIGEST MISMATCH — reproducibility gate failed"
+            exit 1
+          fi
+          echo "Digests match — reproducible."

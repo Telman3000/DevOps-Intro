@@ -1,0 +1,27 @@
+warning: Git tree '/repo' is dirty
+this derivation will be built:
+  /nix/store/yphcr7di5vwrqlp8pv5ivcj40cnpns7m-quicknotes-0.1.0.drv
+building '/nix/store/yphcr7di5vwrqlp8pv5ivcj40cnpns7m-quicknotes-0.1.0.drv'...
+quicknotes> Running phase: unpackPhase
+quicknotes> unpacking source archive /nix/store/nbr9927d358c5zpdd4vvhjf05n3zj02r-app
+quicknotes> source root is app
+quicknotes> Running phase: patchPhase
+quicknotes> Running phase: updateAutotoolsGnuConfigScriptsPhase
+quicknotes> Running phase: configurePhase
+quicknotes> Running phase: buildPhase
+quicknotes> Building subPackage .
+quicknotes> Building subPackage ./cmd/healthcheck
+quicknotes> Running phase: checkPhase
+quicknotes> ok          quicknotes      0.008s
+quicknotes> Running phase: installPhase
+quicknotes> Running phase: fixupPhase
+quicknotes> shrinking RPATHs of ELF executables and libraries in /nix/store/zzqr90fjdgbimx33r194zwam2cilb90d-quicknotes-0.1.0
+quicknotes> shrinking /nix/store/zzqr90fjdgbimx33r194zwam2cilb90d-quicknotes-0.1.0/bin/healthcheck
+quicknotes> patchelf: cannot find section '.dynamic'. The input file is most likely statically linked
+quicknotes> shrinking /nix/store/zzqr90fjdgbimx33r194zwam2cilb90d-quicknotes-0.1.0/bin/quicknotes
+quicknotes> patchelf: cannot find section '.dynamic'. The input file is most likely statically linked
+quicknotes> checking for references to /nix/var/nix/builds/nix-26-4199961146/ in /nix/store/zzqr90fjdgbimx33r194zwam2cilb90d-quicknotes-0.1.0...
+quicknotes> patchelf: cannot find section '.dynamic'. The input file is most likely statically linked
+quicknotes> patchelf: cannot find section '.dynamic'. The input file is most likely statically linked
+quicknotes> patching script interpreter paths in /nix/store/zzqr90fjdgbimx33r194zwam2cilb90d-quicknotes-0.1.0
+quicknotes> stripping (with command strip and flags -S -p) in  /nix/store/zzqr90fjdgbimx33r194zwam2cilb90d-quicknotes-0.1.0/bin
