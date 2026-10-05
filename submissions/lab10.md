@@ -5,7 +5,7 @@ Branch: `feature/lab10`
 Fork: https://github.com/Telman3000/DevOps-Intro
 Image: `ghcr.io/telman3000/devops-intro/quicknotes`
 
-Course PR: _(fill after open)_
+Course PR: https://github.com/inno-devops-labs/DevOps-Intro/pull/1728
 
 ---
 
