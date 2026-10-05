@@ -1,0 +1,20 @@
+﻿package main
+
+import (
+	"bytes"
+	"io"
+
+	"golang.org/x/net/http2"
+)
+
+// intentionallyVulnerableHTTP2Call exercises a vulnerable http2 symbol
+// for the Lab 9 govulncheck red-gate demo. Removed after the demo.
+func intentionallyVulnerableHTTP2Call(r io.Reader) error {
+	fr := http2.NewFramer(nil, r)
+	_, err := fr.ReadFrame()
+	return err
+}
+
+func intentionallyVulnerableHTTP2CallBytes(b []byte) error {
+	return intentionallyVulnerableHTTP2Call(bytes.NewReader(b))
+}

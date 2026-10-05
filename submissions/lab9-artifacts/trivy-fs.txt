@@ -1,0 +1,13 @@
+# trivy fs (aquasec/trivy:0.59.1) --severity HIGH,CRITICAL
+# Command: docker run --rm -v ${PWD}:/src -w /src aquasec/trivy:0.59.1 fs --severity HIGH,CRITICAL /src
+
+## Summary
+- Language deps (app/go.mod): 0 HIGH / 0 CRITICAL
+- Secret findings: 1 HIGH
+
+## Finding
+Target: .vagrant/machines/default/virtualbox/private_key (secrets)
+Severity: HIGH
+Category: AsymmetricPrivateKey (OpenSSH private key)
+Disposition: ACCEPT — see submissions/lab9.md triage table
+Note: path is gitignored (.gitignore has .vagrant/); key body intentionally NOT copied into this artifact.

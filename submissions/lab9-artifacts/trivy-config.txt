@@ -1,0 +1,2 @@
+
+# Note: empty table = 0 HIGH/CRITICAL misconfigurations (aquasec/trivy:0.59.1)

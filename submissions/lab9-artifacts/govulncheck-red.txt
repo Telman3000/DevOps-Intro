@@ -1,0 +1,35 @@
+=== Symbol Results ===
+
+Vulnerability #1: GO-2024-2687
+    HTTP/2 CONTINUATION flood in net/http
+  More info: https://pkg.go.dev/vuln/GO-2024-2687
+  Module: golang.org/x/net
+    Found in: golang.org/x/net@v0.17.0
+    Fixed in: golang.org/x/net@v0.23.0
+    Example traces found:
+      #1: cmd/healthcheck/main.go:16:25: healthcheck.main calls http.Client.Get, which eventually calls http2.ConnectionError.Error
+      #2: cmd/healthcheck/main.go:20:2: healthcheck.main calls tls.Conn.Close, which eventually calls http2.ErrCode.String
+      #3: cmd/healthcheck/main.go:20:2: healthcheck.main calls tls.Conn.Close, which eventually calls http2.FrameHeader.String
+      #4: cmd/healthcheck/main.go:20:2: healthcheck.main calls tls.Conn.Close, which eventually calls http2.FrameType.String
+      #5: cmd/healthcheck/main.go:16:25: healthcheck.main calls http.Client.Get, which eventually calls http2.GoAwayError.Error
+      #6: cmd/healthcheck/main.go:20:2: healthcheck.main calls tls.Conn.Close, which eventually calls http2.Setting.String
+      #7: cmd/healthcheck/main.go:20:2: healthcheck.main calls tls.Conn.Close, which eventually calls http2.SettingID.String
+      #8: cmd/healthcheck/main.go:16:25: healthcheck.main calls http.Client.Get, which eventually calls http2.StreamError.Error
+      #9: cmd/healthcheck/main.go:20:2: healthcheck.main calls http2.transportResponseBody.Close, which eventually calls http2.chunkWriter.Write
+      #10: cmd/healthcheck/main.go:16:25: healthcheck.main calls http.Client.Get, which eventually calls http2.connError.Error
+      #11: cmd/healthcheck/main.go:20:2: healthcheck.main calls tls.Conn.Close, which eventually calls http2.duplicatePseudoHeaderError.Error
+      #12: cmd/healthcheck/main.go:20:2: healthcheck.main calls http2.gzipReader.Close
+      #13: cmd/healthcheck/main.go:20:2: healthcheck.main calls http.body.Close, which eventually calls http2.gzipReader.Read
+      #14: cmd/healthcheck/main.go:20:2: healthcheck.main calls tls.Conn.Close, which eventually calls http2.headerFieldNameError.Error
+      #15: cmd/healthcheck/main.go:20:2: healthcheck.main calls tls.Conn.Close, which eventually calls http2.headerFieldValueError.Error
+      #16: cmd/healthcheck/main.go:20:2: healthcheck.main calls tls.Conn.Close, which eventually calls http2.pseudoHeaderError.Error
+      #17: cmd/healthcheck/main.go:20:2: healthcheck.main calls http2.transportResponseBody.Close, which eventually calls http2.stickyErrWriter.Write
+      #18: cmd/healthcheck/main.go:20:2: healthcheck.main calls http2.transportResponseBody.Close
+      #19: cmd/healthcheck/main.go:20:2: healthcheck.main calls http.body.Close, which eventually calls http2.transportResponseBody.Read
+      #20: cmd/healthcheck/main.go:20:2: healthcheck.main calls tls.Conn.Close, which eventually calls http2.writeData.String
+
+Your code is affected by 1 vulnerability from 1 module.
+This scan also found 3 vulnerabilities in packages you import and 11
+vulnerabilities in modules you require, but your code doesn't appear to call
+these vulnerabilities.
+Use '-show verbose' for more details.
