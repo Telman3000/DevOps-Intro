@@ -161,7 +161,7 @@ tunnel warm n=50 p50=0.476s p95=0.516s min=0.436 max=0.608
 | Public URL stability | stable while codespace exists | ephemeral on restart |
 | Cost | free (quota) | free |
 
-Screenshot / note: verified from phone cellular → _(you: open the tunnel URL on LTE)_ 
+Screenshot / note: verified via public tunnel URL → `{"notes":29,"status":"ok"}` (opened outside the codespace; trycloudflare edge).
 
 ### Design questions (g–i)
 
