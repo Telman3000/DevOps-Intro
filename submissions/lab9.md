@@ -5,7 +5,7 @@ Branch: `feature/lab9`
 Fork: https://github.com/Telman3000/DevOps-Intro
 Tools: Trivy `aquasec/trivy:0.59.1`, ZAP `ghcr.io/zaproxy/zaproxy:2.16.1`, govulncheck `v1.1.4`
 
-Course PR: _(fill after open)_
+Course PR: https://github.com/inno-devops-labs/DevOps-Intro/pull/1727
 
 ---
 
