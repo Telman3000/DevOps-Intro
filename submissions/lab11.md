@@ -147,7 +147,10 @@ Workflow: [`.github/workflows/nix-repro.yml`](../.github/workflows/nix-repro.yml
 
 ### Red demo
 
-`workflow_dispatch` with `break_repro=true` patches `created=` only in job A → digests diverge → `compare` red.
+Two ways (GitHub hides **Run workflow** until `workflow_dispatch` exists on the fork’s **default** branch):
+
+1. **Branch trigger (recommended here):** push `feature/lab11-break` — job `repro-a` patches `created=`, `compare` goes red.
+2. **workflow_dispatch:** after merging the workflow to `main`, Actions → nix-repro → Run workflow → `break_repro=true`.
 
 ### Green / red run URLs
 

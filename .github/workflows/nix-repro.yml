@@ -23,7 +23,9 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: DeterminateSystems/nix-installer-action@e50d5f73bfe71c2dd0aa4218de8f4afa59f8f81d # v16
       - name: Deliberately break reproducibility (red demo only)
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.break_repro }}
+        # UI "Run workflow" needs workflow_dispatch on default branch; also support
+        # a dedicated branch so students can demo red without that button.
+        if: ${{ (github.event_name == 'workflow_dispatch' && inputs.break_repro) || github.ref == 'refs/heads/feature/lab11-break' }}
         run: |
           # Simulate a timestamp leak / divergent SOURCE_DATE_EPOCH effect by
           # changing the fixed `created` field only in this job's workspace.
